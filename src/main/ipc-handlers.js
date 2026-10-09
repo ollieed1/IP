@@ -12,20 +12,29 @@ export function registerIpcHandlers() {
   ipcMain.handle('library:list', () => store.get('libraries'))
 
   ipcMain.handle('library:add', async (_, lib) => {
-    const libraries = store.get('libraries')
-    libraries.push(lib)
-    store.set('libraries', libraries)
-    // Kick off initial fetch
-    await fetchLibraryContent(lib)
-    return { success: true }
+    try {
+      const libraries = store.get('libraries')
+      libraries.push(lib)
+      store.set('libraries', libraries)
+      await fetchLibraryContent(lib)
+      return { success: true }
+    } catch (e) {
+      console.error('library:add error:', e.message)
+      return { success: false, error: e.message }
+    }
   })
 
   ipcMain.handle('library:delete', (_, id) => {
-    const libraries = store.get('libraries').filter(l => l.id !== id)
-    store.set('libraries', libraries)
-    const content = store.get('content')
-    delete content[id]
-    store.set('content', content)
+    try {
+      const libraries = store.get('libraries').filter(l => l.id !== id)
+      store.set('libraries', libraries)
+      const content = store.get('content')
+      delete content[id]
+      store.set('content', content)
+      return { success: true }
+    } catch (e) {
+      return { success: false, error: e.message }
+    }
   })
 
   ipcMain.handle('library:refresh', async (_, id) => {

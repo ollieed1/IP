@@ -120,11 +120,102 @@ html, body, #root {
 
 .sidebar-bottom {
   padding-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .sidebar-add {
   color: var(--accent);
   font-weight: 600;
+}
+
+/* Libraries */
+.library-section {
+  padding: 8px 4px 4px;
+  border-top: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+
+.library-section-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  color: var(--text-tertiary);
+  padding: 0 8px 6px;
+}
+
+.library-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border-radius: 8px;
+  transition: background 0.12s;
+  cursor: default;
+}
+
+.library-item:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+.library-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.library-name {
+  flex: 1;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.library-actions {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.library-btn {
+  width: 22px;
+  height: 22px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  padding: 0;
+  transition: color 0.12s, background 0.12s;
+}
+
+.library-btn:hover {
+  color: var(--text);
+  background: rgba(0,0,0,0.07);
+}
+
+.library-btn svg {
+  width: 13px;
+  height: 13px;
+}
+
+.library-btn.spinning svg {
+  animation: spin 0.8s linear infinite;
+}
+
+.library-delete:hover {
+  color: #ff3b30;
 }
 
 /* ── Top Bar ── */
