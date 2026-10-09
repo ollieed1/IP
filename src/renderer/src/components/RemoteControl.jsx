@@ -3,11 +3,9 @@ import React, { useState, useEffect, useCallback, useRef } from 'react'
 const isElectron = typeof window !== 'undefined' && !!window.api?.tvDiscover
 
 // ── Samsung WebSocket protocol ─────────────────────────────────────────────
-function samsungWS(ip, token = null, ssl = true) {
+function samsungWS(ip, token = null) {
   const appName = btoa('IP Player')
-  const proto = ssl ? 'wss' : 'ws'
-  const port  = ssl ? 8002 : 8001
-  const base = `${proto}://${ip}:${port}/api/v2/channels/samsung.remote.control?name=${appName}`
+  const base = `ws://${ip}:8001/api/v2/channels/samsung.remote.control?name=${appName}`
   return token ? `${base}&token=${token}` : base
 }
 
@@ -32,6 +30,7 @@ export default function RemoteControl() {
   const [error, setError] = useState(null)
   const [manualIp, setManualIp] = useState('')
   const [manualType, setManualType] = useState('samsung')
+  const [pairingHint, setPairingHint] = useState(false)
   const wsRef = useRef(null)
   const lgIdRef = useRef(1)
   const lgPendingRef = useRef({})
@@ -49,39 +48,70 @@ export default function RemoteControl() {
   // ── Samsung WS ────────────────────────────────────────────────────────
   function openSamsungWS(ip, token = null) {
     return new Promise((resolve, reject) => {
-      const url = samsungWS(ip, token, true)
+      const url = samsungWS(ip, token)
       console.log('[TV] connecting to', url)
       const ws = new WebSocket(url)
       let resolved = false
+      let gotToken = null
+
       const timeout = setTimeout(() => {
-        if (!resolved) { resolved = true; reject(new Error('Connection timed out after 10s')) }
-      }, 10000)
+        if (!resolved) { resolved = true; reject(new Error('Connection timed out after 15s')) }
+      }, 15000)
+
       ws.onopen = () => console.log('[TV] WS open — waiting for TV handshake')
+
       ws.onerror = (e) => {
         console.log('[TV] WS error', e)
         clearTimeout(timeout)
-        if (!resolved) { resolved = true; reject(new Error('WebSocket error — TV refused connection')) }
+        if (!resolved) { resolved = true; reject(new Error('TV refused connection — check IP Remote is enabled in TV network settings')) }
       }
+
       ws.onclose = (e) => {
         console.log('[TV] WS closed', e.code, e.reason)
         clearTimeout(timeout)
-        if (wsRef.current === ws) { wsRef.current = null; setConnected(null); setPhase('idle') }
-        if (!resolved) { resolved = true; reject(new Error(`TV closed connection (code ${e.code})`)) }
+        if (wsRef.current === ws) { wsRef.current = null }
+
+        if (!resolved) {
+          // Samsung Frame sends close immediately while showing pairing popup.
+          // Auto-retry after 5s — user has time to accept on TV.
+          if (!token) {
+            resolved = true
+            setPairingHint(true)
+            setTimeout(async () => {
+              setPairingHint(false)
+              try {
+                const saved = await window.api.tvGetConn('samsung')
+                const ws2 = await openSamsungWS(ip, saved?.clientKey || gotToken)
+                resolve(ws2)
+              } catch (e2) {
+                reject(e2)
+              }
+            }, 5000)
+          } else {
+            resolved = true
+            reject(new Error(`TV closed connection (code ${e.code})`))
+          }
+        }
       }
+
       ws.onmessage = (e) => {
         console.log('[TV] message', e.data)
         try {
           const msg = JSON.parse(e.data)
           if (msg.event === 'ms.channel.connect') {
             const tok = msg.data?.token
-            if (tok) { console.log('[TV] got token', tok); window.api.tvSaveClientKey('samsung', tok) }
+            if (tok) {
+              console.log('[TV] got token', tok)
+              gotToken = tok
+              window.api.tvSaveClientKey('samsung', tok)
+            }
             clearTimeout(timeout)
             wsRef.current = ws
             ws.onclose = () => { if (wsRef.current === ws) { wsRef.current = null; setConnected(null); setPhase('idle') } }
             if (!resolved) { resolved = true; resolve(ws) }
           } else if (msg.event === 'ms.channel.unauthorized') {
             clearTimeout(timeout)
-            if (!resolved) { resolved = true; reject(new Error('TV denied access — check IP Remote is enabled')) }
+            if (!resolved) { resolved = true; reject(new Error('TV denied access')) }
           }
         } catch {}
       }
@@ -295,10 +325,16 @@ export default function RemoteControl() {
         </div>
       )}
 
-      {phase === 'connecting' && (
+      {phase === 'connecting' && !pairingHint && (
         <p className="remote-sub" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <svg className="remote-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 16, height: 16, flexShrink: 0 }}><path d="M21 12a9 9 0 1 1-18 0"/></svg>
-          Connecting — accept the prompt on your TV…
+          Connecting…
+        </p>
+      )}
+      {pairingHint && (
+        <p className="remote-sub" style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#e67e22', fontWeight: 600 }}>
+          <svg className="remote-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 16, height: 16, flexShrink: 0 }}><path d="M21 12a9 9 0 1 1-18 0"/></svg>
+          Accept the popup on your TV — retrying in 5s…
         </p>
       )}
 
