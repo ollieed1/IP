@@ -107,6 +107,21 @@ function CardView({ content, watchProgress, sortBy, continueWatching, label }) {
     return content
   }, [content, sortBy])
 
+  // Recently watched = any item with progress, sorted by most recently watched, deduped from continueWatching
+  const continueIds = new Set(continueWatching.map(i => i.id))
+  const recentlyWatched = useMemo(() => {
+    return content
+      .filter(item => {
+        const p = watchProgress[item.id]
+        if (!p?.updatedAt) return false
+        // Fully watched (>95%) — exclude items already in continue watching
+        const pct = p.duration ? p.position / p.duration : 0
+        return pct >= 0.95 && !continueIds.has(item.id)
+      })
+      .sort((a, b) => (watchProgress[b.id]?.updatedAt || 0) - (watchProgress[a.id]?.updatedAt || 0))
+      .slice(0, 18)
+  }, [content, watchProgress])
+
   const visible = sorted.slice(0, cardLimit)
   const remaining = sorted.length - visible.length
 
@@ -115,9 +130,20 @@ function CardView({ content, watchProgress, sortBy, continueWatching, label }) {
       {continueWatching.length > 0 && (
         <section className="list-section">
           <h2 className="section-label">CONTINUE WATCHING</h2>
-          <div className="card-grid">
+          <div className="card-shelf">
             {continueWatching.map(item => (
               <ContentCard key={item.id} item={item} progress={watchProgress[item.id]} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {recentlyWatched.length > 0 && (
+        <section className="list-section">
+          <h2 className="section-label">RECENTLY WATCHED</h2>
+          <div className="card-shelf">
+            {recentlyWatched.map(item => (
+              <ContentCard key={item.id} item={item} progress={watchProgress[item.id]} showWatched />
             ))}
           </div>
         </section>

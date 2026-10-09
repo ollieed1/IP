@@ -7,7 +7,7 @@ function formatProgress(p) {
   return pct > 2 && pct < 95 ? pct : null
 }
 
-export default function ContentCard({ item, progress }) {
+export default function ContentCard({ item, progress, showWatched }) {
   const { setNowPlaying, setSeriesDetail } = useStore()
   const [imgError, setImgError] = useState(false)
   const [hovered, setHovered] = useState(false)
@@ -66,6 +66,7 @@ export default function ContentCard({ item, progress }) {
         {/* Badges */}
         {item.year && <div className="card-badge card-badge-year">{item.year}</div>}
         {item.type === 'series' && <div className="card-badge card-badge-series">Series</div>}
+        {showWatched && <div className="card-badge card-badge-watched">✓</div>}
       </div>
 
       <div className="card-info">

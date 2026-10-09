@@ -451,6 +451,20 @@ html, body, #root {
   padding: 0 4px;
 }
 
+/* ── Card Shelf (horizontal scroll row) ── */
+.card-shelf {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: none;
+}
+.card-shelf::-webkit-scrollbar { display: none; }
+.card-shelf .content-card {
+  flex: 0 0 132px;
+  width: 132px;
+}
+
 /* ── Card Grid ── */
 .card-grid {
   display: grid;
@@ -584,6 +598,15 @@ html, body, #root {
   right: 8px;
   background: var(--accent);
   color: #fff;
+}
+
+.card-badge-watched {
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0,0,0,0.6);
+  color: #4cd964;
+  font-size: 11px;
+  font-weight: 700;
 }
 
 /* Card info below poster */
