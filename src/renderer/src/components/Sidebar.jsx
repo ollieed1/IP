@@ -31,11 +31,6 @@ function LibraryItem({ lib, onRefresh, onDelete }) {
     setRefreshing(false)
   }
 
-  const handleDelete = async (e) => {
-    e.stopPropagation()
-    await onDelete(lib.id)
-  }
-
   return (
     <div
       className="library-item"
@@ -48,7 +43,7 @@ function LibraryItem({ lib, onRefresh, onDelete }) {
         <button
           className={`library-btn ${refreshing ? 'spinning' : ''}`}
           onClick={handleRefresh}
-          title="Refresh library"
+          title="Refresh"
           disabled={refreshing}
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -57,7 +52,7 @@ function LibraryItem({ lib, onRefresh, onDelete }) {
           </svg>
         </button>
         {showDelete && (
-          <button className="library-btn library-delete" onClick={handleDelete} title="Remove library">
+          <button className="library-btn library-delete" onClick={(e) => { e.stopPropagation(); onDelete(lib.id) }} title="Remove">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.4L17.6 5 12 10.6 6.4 5 5 6.4l5.6 5.6L5 17.6 6.4 19l5.6-5.6 5.6 5.6 1.4-1.4-5.6-5.6z"/></svg>
           </button>
         )}
@@ -67,38 +62,77 @@ function LibraryItem({ lib, onRefresh, onDelete }) {
 }
 
 export default function Sidebar() {
-  const { activeSection, setActiveSection, setShowAddLibrary, libraries, loadLibraries, loadContent, activeGroup } = useStore()
+  const {
+    activeSection, setActiveSection,
+    setShowAddLibrary,
+    libraries, loadLibraries, loadContent,
+    groups, activeGroup, setActiveGroup,
+  } = useStore()
 
   const handleRefresh = async (id) => {
     await window.api.refreshLibrary(id)
-    const type = activeSection === 'live' ? 'live' : activeSection === 'movies' ? 'movie' : 'series'
-    await loadContent(type, activeGroup)
+    const type = sectionToType(activeSection)
+    if (type) await loadContent(type, activeGroup)
   }
 
   const handleDelete = async (id) => {
     await window.api.deleteLibrary(id)
     await loadLibraries()
-    const type = activeSection === 'live' ? 'live' : activeSection === 'movies' ? 'movie' : 'series'
-    await loadContent(type, activeGroup)
+    const type = sectionToType(activeSection)
+    if (type) await loadContent(type, activeGroup)
   }
+
+  // Filter out 24/7 and noisy categories
+  const filteredGroups = groups.filter(g => {
+    const n = g.toLowerCase()
+    return !n.includes('24/7') && !n.includes('24-7') && n.trim() !== ''
+  })
 
   return (
     <aside className="sidebar">
       <div className="sidebar-traffic" />
 
+      {/* Main nav */}
       <nav className="sidebar-nav">
         {NAV.map(item => (
           <button
             key={item.id}
             className={`sidebar-btn ${activeSection === item.id ? 'active' : ''}`}
-            onClick={() => setActiveSection(item.id)}
-            title={item.label}
+            onClick={() => { setActiveSection(item.id); setActiveGroup(null) }}
           >
             <span className="sidebar-icon">{item.icon}</span>
             <span className="sidebar-label">{item.label}</span>
           </button>
         ))}
       </nav>
+
+      {/* Category / genre sub-nav — only when there are groups to show */}
+      {filteredGroups.length > 0 && activeSection !== 'downloads' && (
+        <div className="sidebar-subnav">
+          <span className="sidebar-subnav-label">
+            {activeSection === 'live' ? 'CHANNELS' : 'GENRES'}
+          </span>
+          <div className="sidebar-subnav-list">
+            <button
+              className={`sidebar-subnav-item ${!activeGroup ? 'active' : ''}`}
+              onClick={() => setActiveGroup(null)}
+            >
+              All
+            </button>
+            {filteredGroups.map(g => (
+              <button
+                key={g}
+                className={`sidebar-subnav-item ${activeGroup === g ? 'active' : ''}`}
+                onClick={() => setActiveGroup(activeGroup === g ? null : g)}
+                title={g}
+              >
+                {activeSection === 'live' && <span className="subnav-icon">{getCategoryIcon(g)}</span>}
+                <span className="subnav-label">{g}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="sidebar-bottom">
         {libraries.length > 0 && (
@@ -115,10 +149,7 @@ export default function Sidebar() {
           </div>
         )}
 
-        <button
-          className="sidebar-btn sidebar-add"
-          onClick={() => setShowAddLibrary(true)}
-        >
+        <button className="sidebar-btn sidebar-add" onClick={() => setShowAddLibrary(true)}>
           <span className="sidebar-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
           </span>
@@ -127,4 +158,25 @@ export default function Sidebar() {
       </div>
     </aside>
   )
+}
+
+function sectionToType(section) {
+  if (section === 'live') return 'live'
+  if (section === 'movies') return 'movie'
+  if (section === 'series') return 'series'
+  return null
+}
+
+function getCategoryIcon(name) {
+  const n = name.toLowerCase()
+  if (n.includes('sport') || n.includes('football') || n.includes('soccer') || n.includes('cricket') || n.includes('tennis') || n.includes('basketball')) return '⚽'
+  if (n.includes('kid') || n.includes('child') || n.includes('cartoon') || n.includes('disney') || n.includes('nick')) return '🎠'
+  if (n.includes('movie') || n.includes('film') || n.includes('cinema')) return '🎬'
+  if (n.includes('news') || n.includes('politic') || n.includes('current')) return '📰'
+  if (n.includes('music') || n.includes('radio') || n.includes('mtv')) return '🎵'
+  if (n.includes('docu') || n.includes('nature') || n.includes('discovery')) return '🌿'
+  if (n.includes('comedy')) return '😄'
+  if (n.includes('drama')) return '🎭'
+  if (n.includes('entertainment') || n.includes('lifestyle')) return '✨'
+  return '📺'
 }

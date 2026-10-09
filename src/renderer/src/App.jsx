@@ -27,8 +27,8 @@ export default function App() {
       : activeSection === 'series' ? 'series'
       : null
     if (type) loadContent(type, activeGroup, searchQuery)
+    // downloads: don't load library content — show empty state until files are saved
   }, [activeSection, activeGroup, searchQuery])
-  // sortBy is client-side only — no reload needed
 
   return (
     <div className="app">
@@ -36,10 +36,10 @@ export default function App() {
       <div className="main">
         <TopBar />
         <div className="content-area">
-          {isLoading ? (
-            <div className="loading">
-              <div className="spinner" />
-            </div>
+          {activeSection === 'downloads' ? (
+            <EmptyState />
+          ) : isLoading ? (
+            <div className="loading"><div className="spinner" /></div>
           ) : content.length === 0 ? (
             <EmptyState />
           ) : (

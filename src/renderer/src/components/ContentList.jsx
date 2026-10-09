@@ -52,6 +52,9 @@ function LiveView({ content, watchProgress, continueWatching }) {
     const map = {}
     for (const item of content.slice(0, liveLimit)) {
       const g = item.group || 'Other'
+      // Skip 24/7 junk categories
+      const gLower = g.toLowerCase()
+      if (gLower.includes('24/7') || gLower.includes('24-7')) continue
       if (!map[g]) map[g] = []
       map[g].push(item)
     }
