@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import useStore from '../store/useStore'
+import api from '../api/index.js'
 
 function generateId() {
   return `lib_${Date.now()}_${Math.random().toString(36).slice(2)}`
@@ -26,7 +27,7 @@ export default function AddLibraryModal() {
     if (!m3uUrl.trim()) { setError('Please enter a URL'); return }
     setLoading(true); setError('')
     try {
-      await window.api.addLibrary({
+      await api.addLibrary({
         id: generateId(),
         type: 'm3u',
         name: m3uName || 'My Library',
@@ -49,10 +50,10 @@ export default function AddLibraryModal() {
     setLoading(true); setError('')
     try {
       const host = xtHost.trim().replace(/\/$/, '')
-      const authResult = await window.api.testXtreamAuth(host, xtUser, xtPass)
+      const authResult = await api.testXtreamAuth(host, xtUser, xtPass)
       if (!authResult.success) throw new Error('Authentication failed — check your credentials')
 
-      await window.api.addLibrary({
+      await api.addLibrary({
         id: generateId(),
         type: 'xtream',
         name: xtName || 'Xtream Library',

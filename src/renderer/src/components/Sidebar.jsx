@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import useStore from '../store/useStore'
+import api from '../api/index.js'
 
 const NAV = [
   {
@@ -70,13 +71,13 @@ export default function Sidebar() {
   } = useStore()
 
   const handleRefresh = async (id) => {
-    await window.api.refreshLibrary(id)
+    await api.refreshLibrary(id)
     const type = sectionToType(activeSection)
     if (type) await loadContent(type, activeGroup)
   }
 
   const handleDelete = async (id) => {
-    await window.api.deleteLibrary(id)
+    await api.deleteLibrary(id)
     await loadLibraries()
     const type = sectionToType(activeSection)
     if (type) await loadContent(type, activeGroup)

@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import api from '../api/index.js'
 
 const useStore = create((set, get) => ({
   // Navigation
@@ -14,7 +15,7 @@ const useStore = create((set, get) => ({
   setActiveGroup: (g) => set({ activeGroup: g }),
 
   // Sort
-  sortBy: 'default', // 'default' | 'az' | 'za' | 'recent'
+  sortBy: 'default', // 'default' | 'az' | 'za'
   setSortBy: (s) => set({ sortBy: s }),
 
   // All content (unfiltered, for grouping in live view)
@@ -31,26 +32,21 @@ const useStore = create((set, get) => ({
     if (group) filters.group = group
     if (query) filters.query = query
     const [items, groups, all] = await Promise.all([
-      window.api.getContent(filters),
-      window.api.getGroups(type),
-      group || query ? window.api.getContent({ type }) : Promise.resolve(null)
+      api.getContent(filters),
+      api.getGroups(type),
+      group || query ? api.getContent({ type }) : Promise.resolve(null)
     ])
-    set({
-      content: items,
-      groups,
-      allContent: all || items,
-      isLoading: false
-    })
+    set({ content: items, groups, allContent: all || items, isLoading: false })
   },
 
   // Watch progress
   watchProgress: {},
   loadProgress: async () => {
-    const progress = await window.api.getAllProgress()
+    const progress = await api.getAllProgress()
     set({ watchProgress: progress || {} })
   },
   updateProgress: (id, position, duration) => {
-    window.api.setProgress(id, position, duration)
+    api.setProgress(id, position, duration)
     set(state => ({
       watchProgress: {
         ...state.watchProgress,
@@ -67,8 +63,31 @@ const useStore = create((set, get) => ({
   // Libraries
   libraries: [],
   loadLibraries: async () => {
-    const libs = await window.api.listLibraries()
+    const libs = await api.listLibraries()
     set({ libraries: libs || [] })
+
+    // Web: content cache is in-memory; re-fetch all library content on init
+    if (libs?.length && !window.api) {
+      set({ isLoading: true })
+      await api.initLibraries()
+      // Reload current section's content now that cache is populated
+      const { activeSection, activeGroup, searchQuery } = get()
+      const type = activeSection === 'live' ? 'live'
+        : activeSection === 'movies' ? 'movie'
+        : activeSection === 'series' ? 'series'
+        : null
+      if (type) {
+        const filters = { type }
+        if (activeGroup) filters.group = activeGroup
+        if (searchQuery) filters.query = searchQuery
+        const items = api.getContent(filters)
+        const groups = api.getGroups(type)
+        const all = (activeGroup || searchQuery) ? api.getContent({ type }) : items
+        set({ content: items, groups, allContent: all, isLoading: false })
+      } else {
+        set({ isLoading: false })
+      }
+    }
   },
 
   // Modals

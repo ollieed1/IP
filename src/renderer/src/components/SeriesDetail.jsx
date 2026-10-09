@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import useStore from '../store/useStore'
+import api from '../api/index.js'
 
 export default function SeriesDetail() {
   const { seriesDetail, setSeriesDetail, setNowPlaying } = useStore()
@@ -10,7 +11,7 @@ export default function SeriesDetail() {
   useEffect(() => {
     if (!seriesDetail?.seriesId) { setLoading(false); return }
     setLoading(true)
-    window.api.getSeriesInfo({
+    api.getSeriesInfo({
       host: seriesDetail.host,
       username: seriesDetail.username,
       password: seriesDetail.password,
