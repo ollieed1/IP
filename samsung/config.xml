@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets"
+        xmlns:tizen="http://tizen.org/ns/widgets"
+        id="http://ip.app/IPTVPlayer"
+        version="1.0.0">
+  <tizen:application id="IPTVPlayer.app" package="IPTVPlayer" required_version="4.0"/>
+  <tizen:privilege name="http://tizen.org/privilege/internet"/>
+  <tizen:privilege name="http://tizen.org/privilege/tv.display"/>
+  <content src="index.html"/>
+  <name>IP</name>
+  <icon src="img/icon.png"/>
+  <tizen:setting background-support="disable" encryption="disable" hwkey-event="enable"/>
+</widget>

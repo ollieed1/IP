@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920">
+  <title>IP — IPTV Player</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       HOME SCREEN
+  ════════════════════════════════════════════════ -->
+  <div id="screen-home" class="screen active">
+    <div class="home-header">
+      <span class="home-logo">IP</span>
+      <span id="home-clock" class="home-clock"></span>
+    </div>
+    <div class="home-cards" id="home-cards">
+      <!-- Rendered by app.js -->
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       BROWSE SCREEN
+  ════════════════════════════════════════════════ -->
+  <div id="screen-browse" class="screen">
+    <div class="browse-topbar">
+      <span class="browse-logo">IP</span>
+      <span id="browse-breadcrumb" class="browse-breadcrumb">Live TV</span>
+      <span id="clock" class="topbar-clock"></span>
+    </div>
+    <div class="browse-body">
+      <!-- Left rail: categories -->
+      <div class="browse-rail" id="browse-rail">
+        <!-- Rendered by app.js -->
+      </div>
+      <!-- Right: content grid -->
+      <div class="browse-content" id="browse-content" data-section="true">
+        <div class="channel-grid" id="channel-grid">
+          <!-- Rendered by app.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       PLAYER SCREEN
+  ════════════════════════════════════════════════ -->
+  <div id="screen-player" class="screen">
+    <video
+      id="player-video"
+      playsinline
+      autoplay
+      style="width:100%;height:100%;object-fit:contain;background:#000;"
+    ></video>
+    <div id="player-controls" class="player-controls">
+      <div class="player-progress-bar">
+        <div id="player-progress-fill" class="player-progress-fill"></div>
+      </div>
+      <div class="player-bar">
+        <div class="player-bar-left">
+          <img id="player-thumb" class="player-thumb" src="" alt="">
+          <div class="player-info">
+            <div id="player-title" class="player-title"></div>
+            <div id="player-subtitle" class="player-subtitle"></div>
+          </div>
+        </div>
+        <div class="player-bar-centre">
+          <button id="btn-rewind" class="player-btn" data-focusable aria-label="Rewind 10s">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+              <text x="9" y="14" font-size="5" fill="currentColor">10</text>
+            </svg>
+          </button>
+          <button id="btn-playpause" class="player-btn player-btn--primary" data-focusable aria-label="Play/Pause">
+            <svg id="icon-play" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+            <svg id="icon-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+          </button>
+          <button id="btn-forward" class="player-btn" data-focusable aria-label="Forward 30s">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/>
+              <text x="9" y="14" font-size="5" fill="currentColor">30</text>
+            </svg>
+          </button>
+        </div>
+        <div class="player-bar-right">
+          <span id="player-time-current" class="player-time">0:00</span>
+          <span class="player-time-sep">/</span>
+          <span id="player-time-total" class="player-time">0:00</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       SETUP SCREEN
+  ════════════════════════════════════════════════ -->
+  <div id="screen-setup" class="screen">
+    <div class="setup-container">
+      <div class="setup-header">
+        <h1 class="setup-title">Add Library</h1>
+        <p class="setup-subtitle">Connect your IPTV source to get started</p>
+      </div>
+
+      <div class="setup-tabs">
+        <button
+          id="tab-m3u"
+          class="setup-tab active"
+          data-focusable
+          data-tab="m3u"
+          aria-selected="true"
+        >M3U URL</button>
+        <button
+          id="tab-xtream"
+          class="setup-tab"
+          data-focusable
+          data-tab="xtream"
+          aria-selected="false"
+        >Xtream Codes</button>
+      </div>
+
+      <!-- M3U Panel -->
+      <div id="panel-m3u" class="setup-panel active">
+        <div class="form-group">
+          <label class="form-label" for="m3u-name">Library Name</label>
+          <input
+            id="m3u-name"
+            class="form-input"
+            type="text"
+            placeholder="My IPTV"
+            data-focusable
+          >
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="m3u-url">M3U / M3U8 URL</label>
+          <input
+            id="m3u-url"
+            class="form-input"
+            type="text"
+            placeholder="http://provider.com/playlist.m3u"
+            data-focusable
+          >
+        </div>
+        <div class="form-actions">
+          <button id="btn-m3u-submit" class="btn-primary" data-focusable>Load Playlist</button>
+          <button id="btn-m3u-cancel" class="btn-secondary" data-focusable>Cancel</button>
+        </div>
+        <div id="m3u-status" class="setup-status"></div>
+      </div>
+
+      <!-- Xtream Panel -->
+      <div id="panel-xtream" class="setup-panel">
+        <div class="form-group">
+          <label class="form-label" for="xt-name">Library Name</label>
+          <input
+            id="xt-name"
+            class="form-input"
+            type="text"
+            placeholder="My IPTV"
+            data-focusable
+          >
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="xt-server">Server URL</label>
+          <input
+            id="xt-server"
+            class="form-input"
+            type="text"
+            placeholder="http://provider.com"
+            data-focusable
+          >
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="xt-user">Username</label>
+          <input
+            id="xt-user"
+            class="form-input"
+            type="text"
+            placeholder="username"
+            data-focusable
+          >
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="xt-pass">Password</label>
+          <input
+            id="xt-pass"
+            class="form-input"
+            type="password"
+            placeholder="password"
+            data-focusable
+          >
+        </div>
+        <div class="form-actions">
+          <button id="btn-xt-submit" class="btn-primary" data-focusable>Connect</button>
+          <button id="btn-xt-cancel" class="btn-secondary" data-focusable>Cancel</button>
+        </div>
+        <div id="xt-status" class="setup-status"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts — load in dependency order -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js" defer></script>
+  <script src="js/nav.js" defer></script>
+  <script src="js/storage.js" defer></script>
+  <script src="js/m3u.js" defer></script>
+  <script src="js/xtream.js" defer></script>
+  <script src="js/player.js" defer></script>
+  <script src="js/app.js" defer></script>
+</body>
+</html>
