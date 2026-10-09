@@ -14,10 +14,8 @@
     "axios": "^1.6.0",
     "electron-store": "^7.0.3",
     "hls.js": "^1.5.0",
-    "lgtv2": "^2.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "samsung-tv-control": "^1.14.0",
     "zustand": "^4.4.0"
   },
   "devDependencies": {

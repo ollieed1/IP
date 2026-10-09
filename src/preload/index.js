@@ -31,12 +31,15 @@ contextBridge.exposeInMainWorld('api', {
 
   // TV control
   tvDiscover: (onFound) => {
-    ipcRenderer.on('tv:found', (_, device) => onFound(device))
-    return ipcRenderer.invoke('tv:discover')
+    const handler = (_, device) => onFound(device)
+    ipcRenderer.on('tv:found', handler)
+    return ipcRenderer.invoke('tv:discover').finally(() => {
+      ipcRenderer.removeListener('tv:found', handler)
+    })
   },
   tvConnect: (opts) => ipcRenderer.invoke('tv:connect', opts),
-  tvKey: (type, key) => ipcRenderer.invoke('tv:key', { type, key }),
-  tvVolume: (type) => ipcRenderer.invoke('tv:volume', { type }),
   tvDisconnect: (type) => ipcRenderer.invoke('tv:disconnect', { type }),
   tvStatus: () => ipcRenderer.invoke('tv:status'),
+  tvGetConn: (type) => ipcRenderer.invoke('tv:getConn', { type }),
+  tvSaveClientKey: (type, key) => ipcRenderer.invoke('tv:saveClientKey', { type, key }),
 })

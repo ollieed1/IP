@@ -3,12 +3,15 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin()],
+    build: { minify: true }
   },
   preload: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin()],
+    build: { minify: true }
   },
   renderer: {
-    plugins: [react()]
+    plugins: [react()],
+    build: { minify: true }
   }
 })
