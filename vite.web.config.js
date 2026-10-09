@@ -5,7 +5,7 @@ import { resolve } from 'path'
 export default defineConfig({
   plugins: [react()],
   root: resolve(__dirname, 'src/renderer'),
-  base: '/iptv/',
+  base: '/iptv/app/',
   build: {
     outDir: resolve(__dirname, 'web-dist'),
     emptyOutDir: true,
