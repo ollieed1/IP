@@ -28,6 +28,7 @@ export default function App() {
       : null
     if (type) loadContent(type, activeGroup, searchQuery)
   }, [activeSection, activeGroup, searchQuery])
+  // sortBy is client-side only — no reload needed
 
   return (
     <div className="app">

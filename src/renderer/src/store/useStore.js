@@ -3,17 +3,24 @@ import { create } from 'zustand'
 const useStore = create((set, get) => ({
   // Navigation
   activeSection: 'live',
-  setActiveSection: (s) => set({ activeSection: s, activeGroup: null, searchQuery: '' }),
+  setActiveSection: (s) => set({ activeSection: s, activeGroup: null, searchQuery: '', sortBy: 'default' }),
 
   // Search
   searchQuery: '',
   setSearchQuery: (q) => set({ searchQuery: q }),
 
-  // Category filter
+  // Category / genre filter
   activeGroup: null,
   setActiveGroup: (g) => set({ activeGroup: g }),
 
-  // Content
+  // Sort
+  sortBy: 'default', // 'default' | 'az' | 'za' | 'recent'
+  setSortBy: (s) => set({ sortBy: s }),
+
+  // All content (unfiltered, for grouping in live view)
+  allContent: [],
+
+  // Displayed content (filtered by active section)
   content: [],
   groups: [],
   isLoading: false,
@@ -23,9 +30,17 @@ const useStore = create((set, get) => ({
     const filters = { type }
     if (group) filters.group = group
     if (query) filters.query = query
-    const items = await window.api.getContent(filters)
-    const groups = await window.api.getGroups(type)
-    set({ content: items, groups, isLoading: false })
+    const [items, groups, all] = await Promise.all([
+      window.api.getContent(filters),
+      window.api.getGroups(type),
+      group || query ? window.api.getContent({ type }) : Promise.resolve(null)
+    ])
+    set({
+      content: items,
+      groups,
+      allContent: all || items,
+      isLoading: false
+    })
   },
 
   // Watch progress
@@ -56,11 +71,10 @@ const useStore = create((set, get) => ({
     set({ libraries: libs || [] })
   },
 
-  // Add library modal
+  // Modals
   showAddLibrary: false,
   setShowAddLibrary: (v) => set({ showAddLibrary: v }),
 
-  // Series detail
   seriesDetail: null,
   setSeriesDetail: (s) => set({ seriesDetail: s }),
 }))
