@@ -16,7 +16,6 @@ android {
 
     signingConfigs {
         release {
-            // Set via environment variables or local.properties — see README
             storeFile     file(System.getenv("KEYSTORE_PATH") ?: "keystore.jks")
             storePassword System.getenv("KEYSTORE_PASS") ?: ""
             keyAlias      System.getenv("KEY_ALIAS")     ?: "iptv"
@@ -38,4 +37,13 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+}
+
+repositories {
+    maven { url 'https://sdk.amazon.com/api/SDKiapLibrary/android' }
+}
+
+dependencies {
+    // Amazon In-App Purchasing SDK
+    implementation 'com.amazon.device:amazon-appstore-sdk:3.0.4'
 }
