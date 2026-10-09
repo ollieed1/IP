@@ -47,28 +47,39 @@ export default function RemoteControl() {
   // ── Samsung WS ────────────────────────────────────────────────────────
   function openSamsungWS(ip, token = null) {
     return new Promise((resolve, reject) => {
-      const ws = new WebSocket(samsungWS(ip, token))
-      const timeout = setTimeout(() => reject(new Error('Connection timed out')), 10000)
-      ws.onopen = () => { /* wait for TV response */ }
-      ws.onerror = () => { clearTimeout(timeout); reject(new Error('Could not connect to Samsung TV')) }
+      const url = samsungWS(ip, token)
+      console.log('[TV] connecting to', url)
+      const ws = new WebSocket(url)
+      let resolved = false
+      const timeout = setTimeout(() => {
+        if (!resolved) { resolved = true; reject(new Error('Connection timed out after 10s')) }
+      }, 10000)
+      ws.onopen = () => console.log('[TV] WS open — waiting for TV handshake')
+      ws.onerror = (e) => {
+        console.log('[TV] WS error', e)
+        clearTimeout(timeout)
+        if (!resolved) { resolved = true; reject(new Error('WebSocket error — TV refused connection')) }
+      }
       ws.onclose = (e) => {
+        console.log('[TV] WS closed', e.code, e.reason)
         clearTimeout(timeout)
         if (wsRef.current === ws) { wsRef.current = null; setConnected(null); setPhase('idle') }
-        // If closed before resolving, reject
-        reject(new Error(`TV closed connection (code ${e.code})`))
+        if (!resolved) { resolved = true; reject(new Error(`TV closed connection (code ${e.code})`)) }
       }
       ws.onmessage = (e) => {
+        console.log('[TV] message', e.data)
         try {
           const msg = JSON.parse(e.data)
           if (msg.event === 'ms.channel.connect') {
-            // Save token if TV sends one
             const tok = msg.data?.token
-            if (tok) window.api.tvSaveClientKey('samsung', tok)
+            if (tok) { console.log('[TV] got token', tok); window.api.tvSaveClientKey('samsung', tok) }
             clearTimeout(timeout)
             wsRef.current = ws
-            // Detach onclose reject now that we're connected
             ws.onclose = () => { if (wsRef.current === ws) { wsRef.current = null; setConnected(null); setPhase('idle') } }
-            resolve(ws)
+            if (!resolved) { resolved = true; resolve(ws) }
+          } else if (msg.event === 'ms.channel.unauthorized') {
+            clearTimeout(timeout)
+            if (!resolved) { resolved = true; reject(new Error('TV denied access — check IP Remote is enabled')) }
           }
         } catch {}
       }
