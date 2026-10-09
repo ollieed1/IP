@@ -7,6 +7,7 @@ import Player from './components/Player'
 import AddLibraryModal from './components/AddLibraryModal'
 import SeriesDetail from './components/SeriesDetail'
 import EmptyState from './components/EmptyState'
+import DownloadsView from './components/DownloadsView'
 
 export default function App() {
   const {
@@ -37,7 +38,7 @@ export default function App() {
         <TopBar />
         <div className="content-area">
           {activeSection === 'downloads' ? (
-            <EmptyState />
+            <DownloadsView />
           ) : isLoading ? (
             <div className="loading"><div className="spinner" /></div>
           ) : content.length === 0 ? (
