@@ -3,9 +3,10 @@ import React, { useState, useEffect, useCallback, useRef } from 'react'
 const isElectron = typeof window !== 'undefined' && !!window.api?.tvDiscover
 
 // ── Samsung WebSocket protocol ─────────────────────────────────────────────
-function samsungWS(ip) {
+function samsungWS(ip, token = null) {
   const appName = btoa('IP Player')
-  return `ws://${ip}:8001/api/v2/channels/samsung.remote.control?name=${appName}`
+  const base = `ws://${ip}:8001/api/v2/channels/samsung.remote.control?name=${appName}`
+  return token ? `${base}&token=${token}` : base
 }
 
 function samsungKeyMsg(key) {
@@ -44,17 +45,31 @@ export default function RemoteControl() {
   }, [])
 
   // ── Samsung WS ────────────────────────────────────────────────────────
-  function openSamsungWS(ip) {
+  function openSamsungWS(ip, token = null) {
     return new Promise((resolve, reject) => {
-      const ws = new WebSocket(samsungWS(ip))
-      ws.onopen = () => { wsRef.current = ws; resolve(ws) }
-      ws.onerror = () => reject(new Error('Could not connect to Samsung TV'))
-      ws.onclose = () => { if (wsRef.current === ws) { wsRef.current = null; setConnected(null); setPhase('idle') } }
+      const ws = new WebSocket(samsungWS(ip, token))
+      const timeout = setTimeout(() => reject(new Error('Connection timed out')), 10000)
+      ws.onopen = () => { /* wait for TV response */ }
+      ws.onerror = () => { clearTimeout(timeout); reject(new Error('Could not connect to Samsung TV')) }
+      ws.onclose = (e) => {
+        clearTimeout(timeout)
+        if (wsRef.current === ws) { wsRef.current = null; setConnected(null); setPhase('idle') }
+        // If closed before resolving, reject
+        reject(new Error(`TV closed connection (code ${e.code})`))
+      }
       ws.onmessage = (e) => {
         try {
           const msg = JSON.parse(e.data)
-          // TV sends token after pairing
-          if (msg.data?.token) window.api.tvSaveClientKey('samsung', msg.data.token)
+          if (msg.event === 'ms.channel.connect') {
+            // Save token if TV sends one
+            const tok = msg.data?.token
+            if (tok) window.api.tvSaveClientKey('samsung', tok)
+            clearTimeout(timeout)
+            wsRef.current = ws
+            // Detach onclose reject now that we're connected
+            ws.onclose = () => { if (wsRef.current === ws) { wsRef.current = null; setConnected(null); setPhase('idle') } }
+            resolve(ws)
+          }
         } catch {}
       }
     })
@@ -100,9 +115,9 @@ export default function RemoteControl() {
 
   async function reconnectWS(ip, type) {
     try {
-      const conn = await window.api.tvGetConn(type)
-      if (type === 'samsung') await openSamsungWS(ip)
-      else await openLgWS(ip, conn?.clientKey)
+      const saved = await window.api.tvGetConn(type)
+      if (type === 'samsung') await openSamsungWS(ip, saved?.clientKey || null)
+      else await openLgWS(ip, saved?.clientKey || null)
       setConnected({ ip, type })
       setPhase('connected')
     } catch {}
@@ -122,9 +137,9 @@ export default function RemoteControl() {
     setPhase('connecting')
     setError(null)
     try {
-      const conn = await window.api.tvGetConn(type)
-      if (type === 'samsung') await openSamsungWS(ip)
-      else await openLgWS(ip, conn?.clientKey)
+      const saved = await window.api.tvGetConn(type)
+      if (type === 'samsung') await openSamsungWS(ip, saved?.clientKey || null)
+      else await openLgWS(ip, saved?.clientKey || null)
       await window.api.tvConnect({ ip, type })
       setConnected({ ip, type })
       setPhase('connected')
