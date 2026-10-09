@@ -1,6 +1,7 @@
 import { app, BrowserWindow, shell, ipcMain, nativeTheme } from 'electron'
 import { join } from 'path'
 import { registerIpcHandlers } from './ipc-handlers'
+import { startStreamProxy, stopAllStreams } from './stream-proxy'
 
 nativeTheme.themeSource = 'light'
 
@@ -36,8 +37,9 @@ function createWindow() {
   })
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   registerIpcHandlers()
+  await startStreamProxy()
   createWindow()
 
   app.on('activate', () => {
@@ -46,5 +48,6 @@ app.whenReady().then(() => {
 })
 
 app.on('window-all-closed', () => {
+  stopAllStreams()
   if (process.platform !== 'darwin') app.quit()
 })

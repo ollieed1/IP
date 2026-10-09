@@ -54,6 +54,13 @@ export default function Player() {
     }
 
     const isHls = url.includes('.m3u8') || url.includes('/live/')
+
+    // Containers that commonly have AC3/EAC3 audio — needs ffmpeg proxy
+    const needsProxy = !isHls && (
+      /\.(mkv|ts|m2ts|avi|wmv)(\?|$)/i.test(url) ||
+      url.includes('/series/')
+    )
+
     if (isHls && Hls.isSupported()) {
       const hls = new Hls({ maxBufferLength: 30, startLevel: -1 })
       hls.loadSource(url)
@@ -63,6 +70,20 @@ export default function Player() {
         if (data.fatal) setError('Stream unavailable')
       })
       hlsRef.current = hls
+    } else if (needsProxy && window.api?.proxyStream) {
+      // Route through ffmpeg proxy to transcode AC3 → AAC
+      window.api.proxyStream(url).then(({ url: proxyUrl, ffmpegAvailable }) => {
+        if (proxyUrl) {
+          video.src = proxyUrl
+          video.addEventListener('canplay', resume, { once: true })
+        } else {
+          // ffmpeg not installed — fall back to direct and warn
+          console.warn('ffmpeg unavailable, trying direct playback')
+          if (!ffmpegAvailable) setError('Install ffmpeg for audio: brew install ffmpeg')
+          video.src = url
+          video.addEventListener('canplay', resume, { once: true })
+        }
+      })
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = url
       video.addEventListener('loadedmetadata', resume, { once: true })

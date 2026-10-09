@@ -19,6 +19,9 @@ contextBridge.exposeInMainWorld('api', {
   setProgress: (id, pos, dur) => ipcRenderer.invoke('progress:set', id, pos, dur),
   getAllProgress: () => ipcRenderer.invoke('progress:all'),
 
+  // Stream proxy (audio transcode via ffmpeg)
+  proxyStream: (url) => ipcRenderer.invoke('stream:proxy', url),
+
   // Auth
   testXtreamAuth: (host, user, pass) => ipcRenderer.invoke('xtream:auth', host, user, pass),
 

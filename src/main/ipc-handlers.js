@@ -2,6 +2,7 @@ import { ipcMain } from 'electron'
 import store from './store'
 import { parseM3UFromUrl } from './m3u-parser'
 import { authenticate, fetchAll, getSeriesInfo } from './xtream'
+import { getProxyUrl, ffmpegAvailable } from './stream-proxy'
 
 export function registerIpcHandlers() {
   // ---------- store ----------
@@ -80,6 +81,12 @@ export function registerIpcHandlers() {
   })
 
   ipcMain.handle('progress:all', () => store.get('watchProgress'))
+
+  // ---------- stream proxy ----------
+  ipcMain.handle('stream:proxy', (_, sourceUrl) => {
+    const url = getProxyUrl(sourceUrl)
+    return { url, ffmpegAvailable: ffmpegAvailable() }
+  })
 
   // ---------- auth test ----------
   ipcMain.handle('xtream:auth', async (_, host, username, password) => {
