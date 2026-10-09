@@ -630,6 +630,125 @@ html, body, #root {
   transform: rotate(-90deg);
 }
 
+/* ── Channel Card Grid ── */
+.channel-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+  padding: 4px 0 12px;
+}
+
+.channel-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+}
+
+.channel-card-logo {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(0,0,0,0.06);
+  border: 1px solid var(--border);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.channel-card.hovered .channel-card-logo {
+  transform: scale(1.04);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.14);
+  border-color: transparent;
+}
+
+.channel-card-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  padding: 8px;
+}
+
+.channel-card-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+}
+
+.channel-card-placeholder svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* Play overlay on hover */
+.channel-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s;
+  border-radius: 10px;
+}
+
+.channel-card.hovered .channel-card-overlay {
+  opacity: 1;
+}
+
+.channel-card-overlay svg {
+  width: 22px;
+  height: 22px;
+  fill: #fff;
+  filter: drop-shadow(0 1px 4px rgba(0,0,0,0.3));
+}
+
+/* Live indicator dot */
+.channel-live-dot {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ff3b30;
+  box-shadow: 0 0 0 2px rgba(255,59,48,0.25);
+}
+
+/* Progress bar */
+.channel-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255,255,255,0.2);
+}
+
+.channel-progress-fill {
+  height: 100%;
+  background: var(--accent);
+}
+
+/* Name label */
+.channel-card-name {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text);
+  text-align: center;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
 /* ── Content Row ── */
 .content-row {
   display: flex;

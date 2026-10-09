@@ -2,6 +2,7 @@ import React, { useMemo, useState, useRef, useEffect } from 'react'
 import useStore from '../store/useStore'
 import ContentRow from './ContentRow'
 import ContentCard from './ContentCard'
+import ChannelCard from './ChannelCard'
 
 const PAGE_SIZE = 80
 const CARD_PAGE = 60
@@ -64,9 +65,11 @@ function LiveView({ content, watchProgress, continueWatching }) {
       {continueWatching.length > 0 && (
         <section className="list-section">
           <h2 className="section-label">CONTINUE WATCHING</h2>
-          {continueWatching.map(item => (
-            <ContentRow key={item.id} item={item} progress={watchProgress[item.id]} />
-          ))}
+          <div className="channel-card-grid">
+            {continueWatching.map(item => (
+              <ChannelCard key={item.id} item={item} progress={watchProgress[item.id]} />
+            ))}
+          </div>
         </section>
       )}
 
@@ -152,9 +155,13 @@ function CategoryGroup({ title, items, watchProgress }) {
           viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
         ><path d="M6 9l6 6 6-6"/></svg>
       </button>
-      {!collapsed && items.map(item => (
-        <ContentRow key={item.id} item={item} progress={watchProgress[item.id]} />
-      ))}
+      {!collapsed && (
+        <div className="channel-card-grid">
+          {items.map(item => (
+            <ChannelCard key={item.id} item={item} progress={watchProgress[item.id]} />
+          ))}
+        </div>
+      )}
     </section>
   )
 }
