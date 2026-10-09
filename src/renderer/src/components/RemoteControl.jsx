@@ -3,9 +3,11 @@ import React, { useState, useEffect, useCallback, useRef } from 'react'
 const isElectron = typeof window !== 'undefined' && !!window.api?.tvDiscover
 
 // ── Samsung WebSocket protocol ─────────────────────────────────────────────
-function samsungWS(ip, token = null) {
+function samsungWS(ip, token = null, ssl = true) {
   const appName = btoa('IP Player')
-  const base = `ws://${ip}:8001/api/v2/channels/samsung.remote.control?name=${appName}`
+  const proto = ssl ? 'wss' : 'ws'
+  const port  = ssl ? 8002 : 8001
+  const base = `${proto}://${ip}:${port}/api/v2/channels/samsung.remote.control?name=${appName}`
   return token ? `${base}&token=${token}` : base
 }
 
@@ -47,7 +49,7 @@ export default function RemoteControl() {
   // ── Samsung WS ────────────────────────────────────────────────────────
   function openSamsungWS(ip, token = null) {
     return new Promise((resolve, reject) => {
-      const url = samsungWS(ip, token)
+      const url = samsungWS(ip, token, true)
       console.log('[TV] connecting to', url)
       const ws = new WebSocket(url)
       let resolved = false
