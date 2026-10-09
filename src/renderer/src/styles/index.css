@@ -1669,3 +1669,201 @@ html, body, #root {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+/* ── Remote Control ── */
+.remote-wrap {
+  padding: 32px 24px;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.remote-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 4px;
+}
+
+.remote-sub {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.remote-discover-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.remote-scan-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  width: fit-content;
+}
+.remote-scan-btn:disabled { opacity: 0.6; cursor: default; }
+.remote-scan-btn svg { width: 16px; height: 16px; }
+
+.remote-spinner {
+  animation: spin 0.8s linear infinite;
+}
+
+.remote-device-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.remote-device-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.04);
+  border: 1px solid rgba(0,0,0,0.08);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+  width: 100%;
+}
+.remote-device-row:hover { background: rgba(0,0,0,0.07); }
+.remote-device-row svg:first-child { width: 22px; height: 22px; color: var(--text-secondary); flex-shrink: 0; }
+.remote-device-arrow { margin-left: auto; width: 16px; height: 16px; color: var(--text-secondary); flex-shrink: 0; }
+.remote-device-name { display: block; font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.remote-device-ip { display: block; font-size: 12px; color: var(--text-secondary); }
+
+.remote-error {
+  font-size: 13px;
+  color: #c0392b;
+  margin: 0;
+  padding: 10px 12px;
+  background: rgba(192, 57, 43, 0.08);
+  border-radius: 8px;
+}
+
+.remote-manual { font-size: 13px; color: var(--text-secondary); }
+.remote-manual summary { cursor: pointer; padding: 4px 0; }
+.remote-manual-fields { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.remote-input, .remote-select {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.15);
+  font-size: 13px;
+  background: #fff;
+  color: var(--text-primary);
+}
+
+/* Connected state */
+.remote-connected-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.04);
+  border: 1px solid rgba(0,0,0,0.08);
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.remote-connected-bar svg { width: 18px; height: 18px; flex-shrink: 0; }
+.remote-connected-bar span { flex: 1; }
+.remote-disconnect {
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+.remote-disconnect:hover { background: rgba(0,0,0,0.06); }
+
+.remote-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.remote-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.remote-row-center { justify-content: center; }
+
+.remote-btn {
+  border: none;
+  cursor: pointer;
+  background: rgba(0,0,0,0.06);
+  border-radius: 50%;
+  transition: background 0.15s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.remote-btn:hover { background: rgba(0,0,0,0.12); }
+.remote-btn:active { transform: scale(0.93); }
+
+.remote-btn-power {
+  width: 48px;
+  height: 48px;
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+}
+.remote-btn-power:hover { background: rgba(220, 53, 69, 0.18); }
+.remote-btn-power svg { width: 20px; height: 20px; }
+
+.remote-btn-sm {
+  width: 48px;
+  height: 48px;
+  color: var(--text-primary);
+}
+.remote-btn-sm svg { width: 18px; height: 18px; }
+
+/* D-pad */
+.remote-dpad {
+  display: grid;
+  grid-template-columns: 48px 48px 48px;
+  grid-template-rows: 48px 48px 48px;
+  gap: 6px;
+  align-items: center;
+  justify-items: center;
+}
+.remote-btn-dpad {
+  width: 48px;
+  height: 48px;
+  color: var(--text-primary);
+}
+.remote-btn-dpad svg { width: 18px; height: 18px; }
+.remote-dpad-up    { grid-column: 2; grid-row: 1; }
+.remote-dpad-left  { grid-column: 1; grid-row: 2; }
+.remote-btn-ok     { grid-column: 2; grid-row: 2; width: 48px; height: 48px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 13px; font-weight: 700; border: none; cursor: pointer; transition: opacity 0.15s; }
+.remote-btn-ok:hover { opacity: 0.88; }
+.remote-dpad-right { grid-column: 3; grid-row: 2; }
+.remote-dpad-down  { grid-column: 2; grid-row: 3; }
+
+.remote-unavailable {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.remote-unavailable svg { width: 40px; height: 40px; opacity: 0.4; }
+.remote-unavailable p { font-size: 14px; margin: 0; }

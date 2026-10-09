@@ -30,7 +30,7 @@ const PLATFORMS = [
     description: 'Full Electron app with ffmpeg audio support. Plays AC3/EAC3 streams that the web version cannot.',
     badge: 'Download',
     badgeStyle: 'available',
-    cta: { label: 'Download .dmg', href: 'https://github.com/ollieed1/IP/releases/latest' },
+    cta: { label: 'Download .dmg', href: 'https://groogle.co.uk/downloads/IP-0.1.0-arm64.dmg' },
   },
   {
     id: 'samsung',
@@ -78,10 +78,10 @@ const PLATFORMS = [
     ),
     name: 'Android TV / Fire Stick',
     subtitle: 'Sideload via ADB',
-    description: 'The most flexible TV option. Enable ADB debugging, connect over WiFi, and sideload. Or use the Downloader app with a hosted APK.',
-    badge: 'Coming Soon',
-    badgeStyle: 'soon',
-    cta: null,
+    description: 'The easiest TV option. Enable Apps from Unknown Sources, install the free Downloader app, then enter the APK URL to install automatically.',
+    badge: 'Download',
+    badgeStyle: 'available',
+    cta: { label: 'Download APK', href: 'https://groogle.co.uk/downloads/IPPlayer.apk' },
   },
 ]
 

@@ -19,6 +19,10 @@ const NAV = [
     id: 'downloads', label: 'Downloads',
     icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v13M7 12l5 5 5-5"/><path d="M3 19h18"/></svg>
   },
+  {
+    id: 'remote', label: 'TV Remote',
+    icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><circle cx="12" cy="18" r="1" fill="currentColor" stroke="none"/><path d="M9 7h6M9 10h4"/></svg>
+  },
 ]
 
 function LibraryItem({ lib, onRefresh, onDelete }) {

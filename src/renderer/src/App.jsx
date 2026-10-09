@@ -8,6 +8,7 @@ import AddLibraryModal from './components/AddLibraryModal'
 import SeriesDetail from './components/SeriesDetail'
 import EmptyState from './components/EmptyState'
 import DownloadsView from './components/DownloadsView'
+import RemoteControl from './components/RemoteControl'
 
 export default function App() {
   const {
@@ -39,6 +40,8 @@ export default function App() {
         <div className="content-area">
           {activeSection === 'downloads' ? (
             <DownloadsView />
+          ) : activeSection === 'remote' ? (
+            <RemoteControl />
           ) : isLoading ? (
             <div className="loading"><div className="spinner" /></div>
           ) : content.length === 0 ? (

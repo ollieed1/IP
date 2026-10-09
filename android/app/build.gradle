@@ -39,11 +39,10 @@ android {
     }
 }
 
-repositories {
-    maven { url 'https://sdk.amazon.com/api/SDKiapLibrary/android' }
-}
-
 dependencies {
-    // Amazon In-App Purchasing SDK
-    implementation 'com.amazon.device:amazon-appstore-sdk:3.0.4'
+    // Amazon In-App Purchasing SDK — add manually when ready:
+    // 1. Download from developer.amazon.com/apps-and-games/sdk-download
+    // 2. Copy the .aar into android/app/libs/
+    // 3. Uncomment the line below
+    // implementation fileTree(dir: 'libs', include: ['*.aar'])
 }

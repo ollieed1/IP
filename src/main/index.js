@@ -2,6 +2,7 @@ import { app, BrowserWindow, shell, ipcMain, nativeTheme } from 'electron'
 import { join } from 'path'
 import { registerIpcHandlers } from './ipc-handlers'
 import { startStreamProxy, stopAllStreams } from './stream-proxy'
+import { registerTvHandlers } from './tv-control'
 
 nativeTheme.themeSource = 'light'
 
@@ -39,6 +40,7 @@ function createWindow() {
 
 app.whenReady().then(async () => {
   registerIpcHandlers()
+  registerTvHandlers()
   await startStreamProxy()
   createWindow()
 

@@ -27,5 +27,16 @@ contextBridge.exposeInMainWorld('api', {
 
   // Store
   storeGet: (key) => ipcRenderer.invoke('store:get', key),
-  storeSet: (key, val) => ipcRenderer.invoke('store:set', key, val)
+  storeSet: (key, val) => ipcRenderer.invoke('store:set', key, val),
+
+  // TV control
+  tvDiscover: (onFound) => {
+    ipcRenderer.on('tv:found', (_, device) => onFound(device))
+    return ipcRenderer.invoke('tv:discover')
+  },
+  tvConnect: (opts) => ipcRenderer.invoke('tv:connect', opts),
+  tvKey: (type, key) => ipcRenderer.invoke('tv:key', { type, key }),
+  tvVolume: (type) => ipcRenderer.invoke('tv:volume', { type }),
+  tvDisconnect: (type) => ipcRenderer.invoke('tv:disconnect', { type }),
+  tvStatus: () => ipcRenderer.invoke('tv:status'),
 })

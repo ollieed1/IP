@@ -1,0 +1,2 @@
+co.groogle.iptv.debug:string/app_name = 0x7f020000
+co.groogle.iptv.debug:drawable/ic_launcher = 0x7f010000

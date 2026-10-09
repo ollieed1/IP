@@ -1,0 +1,82 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:2:1-39:12
+INJECTED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:2:1-39:12
+INJECTED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:2:1-39:12
+INJECTED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:2:1-39:12
+	package
+		ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:3:5-30
+		INJECTED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:2:11-69
+uses-permission#android.permission.INTERNET
+ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:5:5-66
+	android:name
+		ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:5:22-64
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:6:5-78
+	android:name
+		ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:6:22-76
+uses-feature#android.software.leanback
+ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:9:5-86
+	android:required
+		ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:9:60-84
+	android:name
+		ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:9:19-59
+uses-feature#android.hardware.touchscreen
+ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:10:5-89
+	android:required
+		ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:10:63-87
+	android:name
+		ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:10:19-62
+application
+ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:12:5-37:19
+INJECTED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:12:5-37:19
+	android:extractNativeLibs
+		INJECTED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml
+	android:label
+		ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:13:9-34
+	android:hardwareAccelerated
+		ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:17:9-43
+	android:icon
+		ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:14:9-45
+	android:theme
+		ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:15:9-67
+	android:usesCleartextTraffic
+		ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:16:9-45
+activity#co.groogle.iptv.MainActivity
+ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:19:9-36:20
+	android:exported
+		ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:21:13-36
+	android:configChanges
+		ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:22:13-96
+	android:name
+		ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:20:13-41
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:25:13-28:29
+action#android.intent.action.MAIN
+ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:26:17-68
+	android:name
+		ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:26:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:27:17-76
+	android:name
+		ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:27:27-74
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LEANBACK_LAUNCHER
+ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:31:13-34:29
+category#android.intent.category.LEANBACK_LAUNCHER
+ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:33:17-85
+	android:name
+		ADDED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml:33:27-83
+uses-sdk
+INJECTED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml
+INJECTED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/oliver/ip/android/app/src/main/AndroidManifest.xml
